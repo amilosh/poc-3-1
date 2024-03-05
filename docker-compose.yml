@@ -2,6 +2,7 @@ version: "3.8"
 
 volumes:
   order-service-mysql-volume:
+  inventory-service-mysql-volume:
 
 services:
   order-service-mysql:
@@ -29,5 +30,35 @@ services:
       SPRING_DATASOURCE_URL: jdbc:mysql://order-service-mysql:3306/order_service
       SPRING_DATASOURCE_USERNAME: order_service_username
       SPRING_DATASOURCE_PASSWORD: order_service_password
+      SERVER_PORT: 8080
     ports:
       - 8080:8080
+
+  inventory-service-mysql:
+    image: mysql:8.3
+    container_name: inventory-service-mysql-container
+    restart: always
+    ports:
+      - 3307:3306
+    environment:
+      MYSQL_DATABASE: inventory_service
+      MYSQL_USER: inventory_service_username
+      MYSQL_PASSWORD: inventory_service_password
+      MYSQL_ROOT_PASSWORD: root
+    volumes:
+      - inventory-service-mysql-volume:/var/lib/mysql
+
+  inventory-service:
+    image: inventory-service-image
+    container_name: inventory-service-container
+    restart: always
+    depends_on:
+      - inventory-service-mysql
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      SPRING_DATASOURCE_URL: jdbc:mysql://inventory-service-mysql:3306/inventory_service
+      SPRING_DATASOURCE_USERNAME: inventory_service_username
+      SPRING_DATASOURCE_PASSWORD: inventory_service_password
+      SERVER_PORT: 8081
+    ports:
+      - 8081:8081
