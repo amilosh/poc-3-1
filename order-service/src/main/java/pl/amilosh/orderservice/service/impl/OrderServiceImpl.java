@@ -26,7 +26,7 @@ public class OrderServiceImpl implements OrderService {
 
     private final OrderMapper orderMapper;
     private final OrderRepository orderRepository;
-    private final WebClient webClient;
+    private final WebClient.Builder webClientBuilder;
 
     @Override
     public OrderDto createOrder(OrderDto orderDto) {
@@ -41,8 +41,8 @@ public class OrderServiceImpl implements OrderService {
         var orderSkus = order.getOrderLineItems().stream()
             .map(OrderLineItem::getSkuCode).toList();
 
-        var inventories = webClient.get()
-            .uri("http://inventory-service:8081/inventory",
+        var inventories = webClientBuilder.build().get()
+            .uri("http://inventory-service/inventory",
                 uriBuilder -> uriBuilder.queryParam("skuCode", orderSkus).build())
             .accept(APPLICATION_JSON)
             .retrieve()

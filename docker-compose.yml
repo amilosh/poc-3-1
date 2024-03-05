@@ -25,14 +25,13 @@ services:
     restart: always
     depends_on:
       - order-service-mysql
+      - discovery-service
+      - api-gateway
     environment:
       SPRING_PROFILES_ACTIVE: docker
       SPRING_DATASOURCE_URL: jdbc:mysql://order-service-mysql:3306/order_service
       SPRING_DATASOURCE_USERNAME: order_service_username
       SPRING_DATASOURCE_PASSWORD: order_service_password
-      SERVER_PORT: 8080
-    ports:
-      - 8080:8080
 
   inventory-service-mysql:
     image: mysql:8.3
@@ -54,14 +53,13 @@ services:
     restart: always
     depends_on:
       - inventory-service-mysql
+      - discovery-service
+      - api-gateway
     environment:
       SPRING_PROFILES_ACTIVE: docker
       SPRING_DATASOURCE_URL: jdbc:mysql://inventory-service-mysql:3306/inventory_service
       SPRING_DATASOURCE_USERNAME: inventory_service_username
       SPRING_DATASOURCE_PASSWORD: inventory_service_password
-      SERVER_PORT: 8081
-    ports:
-      - 8081:8081
 
   discovery-service:
     image: discovery-service-image
@@ -71,3 +69,14 @@ services:
       SERVER_PORT: 8761
     ports:
       - 8761:8761
+
+  api-gateway:
+    image: api-gateway-image
+    container_name: api-gateway-container
+    depends_on:
+      - discovery-service
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      SERVER_PORT: 8080
+    ports:
+      - 8080:8080
