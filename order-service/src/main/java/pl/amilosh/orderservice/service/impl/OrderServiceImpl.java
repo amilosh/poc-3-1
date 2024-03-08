@@ -3,11 +3,13 @@ package pl.amilosh.orderservice.service.impl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.reactive.function.client.WebClient;
 import pl.amilosh.orderservice.dto.InventoryDto;
 import pl.amilosh.orderservice.dto.OrderDto;
+import pl.amilosh.orderservice.event.OrderSavedEvent;
 import pl.amilosh.orderservice.mapping.OrderMapper;
 import pl.amilosh.orderservice.model.Order;
 import pl.amilosh.orderservice.model.OrderLineItem;
@@ -27,6 +29,7 @@ public class OrderServiceImpl implements OrderService {
     private final OrderMapper orderMapper;
     private final OrderRepository orderRepository;
     private final WebClient.Builder webClientBuilder;
+    private final KafkaTemplate<String, OrderSavedEvent> kafkaTemplate;
 
     @Override
     public OrderDto createOrder(OrderDto orderDto) {
@@ -34,6 +37,7 @@ public class OrderServiceImpl implements OrderService {
         var order = orderMapper.toEntity(orderDto);
         validateOrder(order);
         var savedOrder = orderRepository.save(order);
+        kafkaTemplate.send("notificationTopic", new OrderSavedEvent(savedOrder.getOrderNumber()));
         return orderMapper.toDto(savedOrder);
     }
 

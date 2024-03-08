@@ -33,6 +33,13 @@ spring:
           uri: http://discovery-service:8761
           predicates:
             - Path=/eureka/**
+        # notification-service
+        - id: notification-service
+          uri: lb://notification-service
+          predicates:
+            - Path=/notification-service/**
+          filters:
+            - StripPrefix=1
 
 # Application
 server:
