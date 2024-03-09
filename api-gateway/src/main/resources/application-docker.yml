@@ -50,3 +50,10 @@ eureka:
   client:
     serviceUrl:
       defaultZone: http://discovery-service:8761/eureka
+
+# Spring Boot Actuator
+management:
+  endpoints:
+    web:
+      exposure:
+        include: prometheus
