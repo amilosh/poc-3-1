@@ -1,0 +1,68 @@
+{
+	"info": {
+		"_postman_id": "28d94980-20f5-4b72-bff1-eabe62a256a1",
+		"name": "poc-3-1",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "4829985"
+	},
+	"item": [
+		{
+			"name": "Create order",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"orderLineItemDtos\": [\r\n        {\r\n            \"skuCode\": \"123abc\",\r\n            \"price\": 999.99,\r\n            \"quantity\": 1\r\n        }\r\n    ]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/order-service/order",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"order-service",
+						"order"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create inventory",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"skuCode\": \"123abc\",\r\n    \"quantity\": 123\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/inventory-service/inventory",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"inventory-service",
+						"inventory"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
